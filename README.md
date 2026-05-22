@@ -29,7 +29,7 @@ A deliberate **prototype** demonstrating an AI use case where deep telecoms doma
 - [ ] v0.2 — Streamlit UI with paste-and-analyse flow
 - [ ] v0.3 — Library of anonymised reference traces (registration, INVITE failures, codec mismatches)
 - [ ] v0.4 — Failure-pattern playbook grounded in real-world UK carrier behaviour (Gamma, Colt, BT)
-- [ ] v0.5 — Deploy to Streamlit Cloud + demo Loom
+- [ ] v0.5 — Deploy to Streamlit Cloud · embed screenshots in this README
 
 ## Stack
 

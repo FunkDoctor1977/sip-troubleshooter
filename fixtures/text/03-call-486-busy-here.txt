@@ -1,0 +1,84 @@
+Scenario: Alice calls Bob; Bob is on another call. Bob's UA returns 486 Busy Here.
+Common cause: callee already in an active dialogue, or DND enabled.
+
+==============================================================================
+F1   Alice -> Proxy   INVITE
+==============================================================================
+INVITE sip:bob@biloxi.example.com SIP/2.0
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK4b76e
+Max-Forwards: 70
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-77b
+To: Bob <sip:bob@biloxi.example.com>
+Call-ID: 99182304775@atlanta.example.com
+CSeq: 1 INVITE
+Contact: <sip:alice@pc33.atlanta.example.com>
+Content-Type: application/sdp
+Content-Length: 151
+
+v=0
+o=alice 2890844600 2890844600 IN IP4 pc33.atlanta.example.com
+s=-
+c=IN IP4 pc33.atlanta.example.com
+t=0 0
+m=audio 49180 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+==============================================================================
+F2   Proxy -> Alice   100 Trying
+==============================================================================
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK4b76e;received=192.0.2.101
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-77b
+To: Bob <sip:bob@biloxi.example.com>
+Call-ID: 99182304775@atlanta.example.com
+CSeq: 1 INVITE
+Content-Length: 0
+
+==============================================================================
+F3   Proxy -> Bob   INVITE
+==============================================================================
+INVITE sip:bob@192.0.2.201 SIP/2.0
+Via: SIP/2.0/UDP proxy.biloxi.example.com;branch=z9hG4bKnashb486
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK4b76e;received=192.0.2.101
+Max-Forwards: 69
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-77b
+To: Bob <sip:bob@biloxi.example.com>
+Call-ID: 99182304775@atlanta.example.com
+CSeq: 1 INVITE
+Contact: <sip:alice@pc33.atlanta.example.com>
+Content-Length: 0
+
+==============================================================================
+F4   Bob -> Proxy   486 Busy Here
+==============================================================================
+SIP/2.0 486 Busy Here
+Via: SIP/2.0/UDP proxy.biloxi.example.com;branch=z9hG4bKnashb486
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK4b76e;received=192.0.2.101
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-77b
+To: Bob <sip:bob@biloxi.example.com>;tag=bob-busy-44
+Call-ID: 99182304775@atlanta.example.com
+CSeq: 1 INVITE
+Content-Length: 0
+
+==============================================================================
+F5   Proxy -> Alice   486 Busy Here
+==============================================================================
+SIP/2.0 486 Busy Here
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK4b76e;received=192.0.2.101
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-77b
+To: Bob <sip:bob@biloxi.example.com>;tag=bob-busy-44
+Call-ID: 99182304775@atlanta.example.com
+CSeq: 1 INVITE
+Content-Length: 0
+
+==============================================================================
+F6   Alice -> Proxy   ACK
+==============================================================================
+ACK sip:bob@biloxi.example.com SIP/2.0
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK4b76e
+Max-Forwards: 70
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-77b
+To: Bob <sip:bob@biloxi.example.com>;tag=bob-busy-44
+Call-ID: 99182304775@atlanta.example.com
+CSeq: 1 ACK
+Content-Length: 0

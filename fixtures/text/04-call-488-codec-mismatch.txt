@@ -1,0 +1,108 @@
+Scenario: Codec / SDP negotiation failure. Caller offers only G.729 (RTP/AVP 18).
+Callee supports only G.711 PCMU (RTP/AVP 0) and rejects with 488 Not Acceptable Here.
+Common in international SIP trunking when codec policy on the carrier or SBC has
+not been aligned across legs.
+
+==============================================================================
+F1   Alice -> Proxy   INVITE   (offer: G.729 only)
+==============================================================================
+INVITE sip:bob@biloxi.example.com SIP/2.0
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK488mismatch
+Max-Forwards: 70
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-cd1
+To: Bob <sip:bob@biloxi.example.com>
+Call-ID: 4427812230@atlanta.example.com
+CSeq: 1 INVITE
+Contact: <sip:alice@pc33.atlanta.example.com>
+Content-Type: application/sdp
+Content-Length: 152
+
+v=0
+o=alice 2890844700 2890844700 IN IP4 pc33.atlanta.example.com
+s=-
+c=IN IP4 pc33.atlanta.example.com
+t=0 0
+m=audio 49210 RTP/AVP 18
+a=rtpmap:18 G729/8000
+a=fmtp:18 annexb=no
+
+==============================================================================
+F2   Proxy -> Alice   100 Trying
+==============================================================================
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK488mismatch;received=192.0.2.101
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-cd1
+To: Bob <sip:bob@biloxi.example.com>
+Call-ID: 4427812230@atlanta.example.com
+CSeq: 1 INVITE
+Content-Length: 0
+
+==============================================================================
+F3   Proxy -> Bob   INVITE
+==============================================================================
+INVITE sip:bob@192.0.2.201 SIP/2.0
+Via: SIP/2.0/UDP proxy.biloxi.example.com;branch=z9hG4bKnash488
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK488mismatch;received=192.0.2.101
+Max-Forwards: 69
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-cd1
+To: Bob <sip:bob@biloxi.example.com>
+Call-ID: 4427812230@atlanta.example.com
+CSeq: 1 INVITE
+Contact: <sip:alice@pc33.atlanta.example.com>
+Content-Type: application/sdp
+Content-Length: 152
+
+v=0
+o=alice 2890844700 2890844700 IN IP4 pc33.atlanta.example.com
+s=-
+c=IN IP4 pc33.atlanta.example.com
+t=0 0
+m=audio 49210 RTP/AVP 18
+a=rtpmap:18 G729/8000
+a=fmtp:18 annexb=no
+
+==============================================================================
+F4   Bob -> Proxy   488 Not Acceptable Here
+==============================================================================
+SIP/2.0 488 Not Acceptable Here
+Via: SIP/2.0/UDP proxy.biloxi.example.com;branch=z9hG4bKnash488
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK488mismatch;received=192.0.2.101
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-cd1
+To: Bob <sip:bob@biloxi.example.com>;tag=bob-488-22
+Call-ID: 4427812230@atlanta.example.com
+CSeq: 1 INVITE
+Warning: 304 proxy.biloxi.example.com "Incompatible media format"
+Content-Type: application/sdp
+Content-Length: 92
+
+v=0
+o=bob 2890844701 2890844701 IN IP4 192.0.2.201
+s=-
+c=IN IP4 192.0.2.201
+t=0 0
+m=audio 0 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+==============================================================================
+F5   Proxy -> Alice   488 Not Acceptable Here
+==============================================================================
+SIP/2.0 488 Not Acceptable Here
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK488mismatch;received=192.0.2.101
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-cd1
+To: Bob <sip:bob@biloxi.example.com>;tag=bob-488-22
+Call-ID: 4427812230@atlanta.example.com
+CSeq: 1 INVITE
+Warning: 304 proxy.biloxi.example.com "Incompatible media format"
+Content-Length: 0
+
+==============================================================================
+F6   Alice -> Proxy   ACK
+==============================================================================
+ACK sip:bob@biloxi.example.com SIP/2.0
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK488mismatch
+Max-Forwards: 70
+From: Alice <sip:alice@atlanta.example.com>;tag=alc-cd1
+To: Bob <sip:bob@biloxi.example.com>;tag=bob-488-22
+Call-ID: 4427812230@atlanta.example.com
+CSeq: 1 ACK
+Content-Length: 0

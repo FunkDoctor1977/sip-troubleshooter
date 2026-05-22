@@ -1,0 +1,70 @@
+Scenario: Outbound call to a carrier-side destination. Carrier SBC returns
+503 Service Unavailable, typically because the next-hop trunk is overloaded,
+in maintenance, or there is no available outbound capacity on the route.
+Frequent on UK SIP trunking (e.g. Gamma, Colt, BT Wholesale) during planned
+maintenance windows or transient capacity exhaustion.
+
+==============================================================================
+F1   PBX -> Carrier SBC   INVITE
+==============================================================================
+INVITE sip:+441214567890@sbc.gamma.example.net;user=phone SIP/2.0
+Via: SIP/2.0/UDP pbx.customer.example.co.uk:5060;branch=z9hG4bK503out
+Max-Forwards: 70
+From: "Customer Office" <sip:+441219876543@pbx.customer.example.co.uk>;tag=pbx-out-7723
+To: <sip:+441214567890@sbc.gamma.example.net;user=phone>
+Call-ID: outbound-13ee-aa@pbx.customer.example.co.uk
+CSeq: 1 INVITE
+Contact: <sip:+441219876543@pbx.customer.example.co.uk:5060>
+Allow: INVITE, ACK, CANCEL, BYE, REGISTER, OPTIONS, REFER, INFO, NOTIFY
+Supported: replaces, timer
+Content-Type: application/sdp
+Content-Length: 207
+
+v=0
+o=- 2890850000 2890850000 IN IP4 pbx.customer.example.co.uk
+s=-
+c=IN IP4 203.0.113.10
+t=0 0
+m=audio 30002 RTP/AVP 8 0 101
+a=rtpmap:8 PCMA/8000
+a=rtpmap:0 PCMU/8000
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+a=sendrecv
+
+==============================================================================
+F2   Carrier SBC -> PBX   100 Trying
+==============================================================================
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP pbx.customer.example.co.uk:5060;branch=z9hG4bK503out;received=203.0.113.10
+From: "Customer Office" <sip:+441219876543@pbx.customer.example.co.uk>;tag=pbx-out-7723
+To: <sip:+441214567890@sbc.gamma.example.net;user=phone>
+Call-ID: outbound-13ee-aa@pbx.customer.example.co.uk
+CSeq: 1 INVITE
+Content-Length: 0
+
+==============================================================================
+F3   Carrier SBC -> PBX   503 Service Unavailable
+==============================================================================
+SIP/2.0 503 Service Unavailable
+Via: SIP/2.0/UDP pbx.customer.example.co.uk:5060;branch=z9hG4bK503out;received=203.0.113.10
+From: "Customer Office" <sip:+441219876543@pbx.customer.example.co.uk>;tag=pbx-out-7723
+To: <sip:+441214567890@sbc.gamma.example.net;user=phone>;tag=sbc-503-91
+Call-ID: outbound-13ee-aa@pbx.customer.example.co.uk
+CSeq: 1 INVITE
+Retry-After: 60
+Reason: SIP;cause=503;text="No route available"
+Server: GammaSBC/4.2
+Content-Length: 0
+
+==============================================================================
+F4   PBX -> Carrier SBC   ACK
+==============================================================================
+ACK sip:+441214567890@sbc.gamma.example.net;user=phone SIP/2.0
+Via: SIP/2.0/UDP pbx.customer.example.co.uk:5060;branch=z9hG4bK503out
+Max-Forwards: 70
+From: "Customer Office" <sip:+441219876543@pbx.customer.example.co.uk>;tag=pbx-out-7723
+To: <sip:+441214567890@sbc.gamma.example.net;user=phone>;tag=sbc-503-91
+Call-ID: outbound-13ee-aa@pbx.customer.example.co.uk
+CSeq: 1 ACK
+Content-Length: 0

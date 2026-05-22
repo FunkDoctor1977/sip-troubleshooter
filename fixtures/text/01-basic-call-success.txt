@@ -1,0 +1,163 @@
+Scenario: Successful basic call between Alice and Bob via a single proxy.
+Source pattern: RFC 3665 §3.1 (basic call flow), RFC 3261 normative behaviour.
+
+==============================================================================
+F1   Alice -> Proxy   INVITE
+==============================================================================
+INVITE sip:bob@biloxi.example.com SIP/2.0
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK74bf9
+Max-Forwards: 70
+From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl
+To: Bob <sip:bob@biloxi.example.com>
+Call-ID: 3848276298220188511@atlanta.example.com
+CSeq: 1 INVITE
+Contact: <sip:alice@pc33.atlanta.example.com>
+Content-Type: application/sdp
+Content-Length: 151
+
+v=0
+o=alice 2890844526 2890844526 IN IP4 pc33.atlanta.example.com
+s=-
+c=IN IP4 pc33.atlanta.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+==============================================================================
+F2   Proxy -> Alice   100 Trying
+==============================================================================
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK74bf9;received=192.0.2.101
+From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl
+To: Bob <sip:bob@biloxi.example.com>
+Call-ID: 3848276298220188511@atlanta.example.com
+CSeq: 1 INVITE
+Content-Length: 0
+
+==============================================================================
+F3   Proxy -> Bob   INVITE
+==============================================================================
+INVITE sip:bob@192.0.2.201 SIP/2.0
+Via: SIP/2.0/UDP proxy.biloxi.example.com;branch=z9hG4bKnashds7
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK74bf9;received=192.0.2.101
+Max-Forwards: 69
+From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl
+To: Bob <sip:bob@biloxi.example.com>
+Call-ID: 3848276298220188511@atlanta.example.com
+CSeq: 1 INVITE
+Contact: <sip:alice@pc33.atlanta.example.com>
+Content-Type: application/sdp
+Content-Length: 151
+
+v=0
+o=alice 2890844526 2890844526 IN IP4 pc33.atlanta.example.com
+s=-
+c=IN IP4 pc33.atlanta.example.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+==============================================================================
+F4   Bob -> Proxy   180 Ringing
+==============================================================================
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP proxy.biloxi.example.com;branch=z9hG4bKnashds7
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK74bf9;received=192.0.2.101
+From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl
+To: Bob <sip:bob@biloxi.example.com>;tag=8321234356
+Call-ID: 3848276298220188511@atlanta.example.com
+CSeq: 1 INVITE
+Contact: <sip:bob@192.0.2.201>
+Content-Length: 0
+
+==============================================================================
+F5   Proxy -> Alice   180 Ringing
+==============================================================================
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK74bf9;received=192.0.2.101
+From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl
+To: Bob <sip:bob@biloxi.example.com>;tag=8321234356
+Call-ID: 3848276298220188511@atlanta.example.com
+CSeq: 1 INVITE
+Contact: <sip:bob@192.0.2.201>
+Content-Length: 0
+
+==============================================================================
+F6   Bob -> Proxy   200 OK
+==============================================================================
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP proxy.biloxi.example.com;branch=z9hG4bKnashds7
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK74bf9;received=192.0.2.101
+From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl
+To: Bob <sip:bob@biloxi.example.com>;tag=8321234356
+Call-ID: 3848276298220188511@atlanta.example.com
+CSeq: 1 INVITE
+Contact: <sip:bob@192.0.2.201>
+Content-Type: application/sdp
+Content-Length: 147
+
+v=0
+o=bob 2890844527 2890844527 IN IP4 192.0.2.201
+s=-
+c=IN IP4 192.0.2.201
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+==============================================================================
+F7   Proxy -> Alice   200 OK
+==============================================================================
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK74bf9;received=192.0.2.101
+From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl
+To: Bob <sip:bob@biloxi.example.com>;tag=8321234356
+Call-ID: 3848276298220188511@atlanta.example.com
+CSeq: 1 INVITE
+Contact: <sip:bob@192.0.2.201>
+Content-Type: application/sdp
+Content-Length: 147
+
+v=0
+o=bob 2890844527 2890844527 IN IP4 192.0.2.201
+s=-
+c=IN IP4 192.0.2.201
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+==============================================================================
+F8   Alice -> Bob   ACK   (sent direct, end-to-end)
+==============================================================================
+ACK sip:bob@192.0.2.201 SIP/2.0
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK74bf9.1
+Max-Forwards: 70
+From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl
+To: Bob <sip:bob@biloxi.example.com>;tag=8321234356
+Call-ID: 3848276298220188511@atlanta.example.com
+CSeq: 1 ACK
+Content-Length: 0
+
+----- RTP media flows between 192.0.2.101:49172 and 192.0.2.201:3456 (G.711 PCMU) -----
+
+==============================================================================
+F9   Alice -> Bob   BYE
+==============================================================================
+BYE sip:bob@192.0.2.201 SIP/2.0
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK321aBcdEf
+Max-Forwards: 70
+From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl
+To: Bob <sip:bob@biloxi.example.com>;tag=8321234356
+Call-ID: 3848276298220188511@atlanta.example.com
+CSeq: 2 BYE
+Content-Length: 0
+
+==============================================================================
+F10  Bob -> Alice   200 OK
+==============================================================================
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP pc33.atlanta.example.com;branch=z9hG4bK321aBcdEf
+From: Alice <sip:alice@atlanta.example.com>;tag=9fxced76sl
+To: Bob <sip:bob@biloxi.example.com>;tag=8321234356
+Call-ID: 3848276298220188511@atlanta.example.com
+CSeq: 2 BYE
+Content-Length: 0

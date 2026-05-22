@@ -1,0 +1,141 @@
+Scenario: PBX calls out via a SIP trunk. Carrier proxy challenges with
+407 Proxy Authentication Required; PBX re-sends INVITE with Proxy-Authorization
+header containing digest credentials; call proceeds to 200 OK.
+Common when a SIP trunk has authenticated egress enabled (digest), as opposed
+to IP-whitelist trunks.
+
+==============================================================================
+F1   PBX -> Carrier Proxy   INVITE
+==============================================================================
+INVITE sip:+441618221234@trunk.colt.example.net;user=phone SIP/2.0
+Via: SIP/2.0/UDP pbx.customer.example.co.uk:5060;branch=z9hG4bK407c1
+Max-Forwards: 70
+From: "Customer Office" <sip:+441219876543@pbx.customer.example.co.uk>;tag=pbx-407-1
+To: <sip:+441618221234@trunk.colt.example.net;user=phone>
+Call-ID: outbound-407-aa@pbx.customer.example.co.uk
+CSeq: 1 INVITE
+Contact: <sip:+441219876543@pbx.customer.example.co.uk:5060>
+Content-Type: application/sdp
+Content-Length: 200
+
+v=0
+o=- 2890860000 2890860000 IN IP4 pbx.customer.example.co.uk
+s=-
+c=IN IP4 203.0.113.10
+t=0 0
+m=audio 30010 RTP/AVP 8 0 101
+a=rtpmap:8 PCMA/8000
+a=rtpmap:0 PCMU/8000
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+a=sendrecv
+
+==============================================================================
+F2   Carrier Proxy -> PBX   407 Proxy Authentication Required
+==============================================================================
+SIP/2.0 407 Proxy Authentication Required
+Via: SIP/2.0/UDP pbx.customer.example.co.uk:5060;branch=z9hG4bK407c1;received=203.0.113.10
+From: "Customer Office" <sip:+441219876543@pbx.customer.example.co.uk>;tag=pbx-407-1
+To: <sip:+441618221234@trunk.colt.example.net;user=phone>;tag=proxy-407-aa
+Call-ID: outbound-407-aa@pbx.customer.example.co.uk
+CSeq: 1 INVITE
+Proxy-Authenticate: Digest realm="colt.example.net",
+    qop="auth",
+    nonce="abf3a51fcde91123abc77efa4488d901",
+    opaque="",
+    stale=FALSE,
+    algorithm=MD5
+Content-Length: 0
+
+==============================================================================
+F3   PBX -> Carrier Proxy   ACK
+==============================================================================
+ACK sip:+441618221234@trunk.colt.example.net;user=phone SIP/2.0
+Via: SIP/2.0/UDP pbx.customer.example.co.uk:5060;branch=z9hG4bK407c1
+Max-Forwards: 70
+From: "Customer Office" <sip:+441219876543@pbx.customer.example.co.uk>;tag=pbx-407-1
+To: <sip:+441618221234@trunk.colt.example.net;user=phone>;tag=proxy-407-aa
+Call-ID: outbound-407-aa@pbx.customer.example.co.uk
+CSeq: 1 ACK
+Content-Length: 0
+
+==============================================================================
+F4   PBX -> Carrier Proxy   INVITE (with Proxy-Authorization)
+==============================================================================
+INVITE sip:+441618221234@trunk.colt.example.net;user=phone SIP/2.0
+Via: SIP/2.0/UDP pbx.customer.example.co.uk:5060;branch=z9hG4bK407c2
+Max-Forwards: 70
+From: "Customer Office" <sip:+441219876543@pbx.customer.example.co.uk>;tag=pbx-407-1
+To: <sip:+441618221234@trunk.colt.example.net;user=phone>
+Call-ID: outbound-407-aa@pbx.customer.example.co.uk
+CSeq: 2 INVITE
+Contact: <sip:+441219876543@pbx.customer.example.co.uk:5060>
+Proxy-Authorization: Digest username="customer-trunk-001",
+    realm="colt.example.net",
+    nonce="abf3a51fcde91123abc77efa4488d901",
+    uri="sip:+441618221234@trunk.colt.example.net;user=phone",
+    qop=auth,
+    nc=00000001,
+    cnonce="9ee4cc1b",
+    response="0c1f8aaa3b18f0c83b1d8a91cc14e7e2",
+    opaque="",
+    algorithm=MD5
+Content-Type: application/sdp
+Content-Length: 200
+
+v=0
+o=- 2890860000 2890860000 IN IP4 pbx.customer.example.co.uk
+s=-
+c=IN IP4 203.0.113.10
+t=0 0
+m=audio 30010 RTP/AVP 8 0 101
+a=rtpmap:8 PCMA/8000
+a=rtpmap:0 PCMU/8000
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-15
+a=sendrecv
+
+==============================================================================
+F5   Carrier Proxy -> PBX   100 Trying
+==============================================================================
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP pbx.customer.example.co.uk:5060;branch=z9hG4bK407c2;received=203.0.113.10
+From: "Customer Office" <sip:+441219876543@pbx.customer.example.co.uk>;tag=pbx-407-1
+To: <sip:+441618221234@trunk.colt.example.net;user=phone>
+Call-ID: outbound-407-aa@pbx.customer.example.co.uk
+CSeq: 2 INVITE
+Content-Length: 0
+
+==============================================================================
+F6   Carrier Proxy -> PBX   200 OK
+==============================================================================
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP pbx.customer.example.co.uk:5060;branch=z9hG4bK407c2;received=203.0.113.10
+From: "Customer Office" <sip:+441219876543@pbx.customer.example.co.uk>;tag=pbx-407-1
+To: <sip:+441618221234@trunk.colt.example.net;user=phone>;tag=proxy-ok-12
+Call-ID: outbound-407-aa@pbx.customer.example.co.uk
+CSeq: 2 INVITE
+Contact: <sip:+441618221234@trunk.colt.example.net:5060>
+Content-Type: application/sdp
+Content-Length: 152
+
+v=0
+o=- 3000010000 3000010000 IN IP4 trunk.colt.example.net
+s=-
+c=IN IP4 198.51.100.45
+t=0 0
+m=audio 40010 RTP/AVP 8
+a=rtpmap:8 PCMA/8000
+a=sendrecv
+
+==============================================================================
+F7   PBX -> Carrier Proxy   ACK
+==============================================================================
+ACK sip:+441618221234@trunk.colt.example.net;user=phone SIP/2.0
+Via: SIP/2.0/UDP pbx.customer.example.co.uk:5060;branch=z9hG4bK407c2.1
+Max-Forwards: 70
+From: "Customer Office" <sip:+441219876543@pbx.customer.example.co.uk>;tag=pbx-407-1
+To: <sip:+441618221234@trunk.colt.example.net;user=phone>;tag=proxy-ok-12
+Call-ID: outbound-407-aa@pbx.customer.example.co.uk
+CSeq: 2 ACK
+Content-Length: 0

@@ -1,0 +1,71 @@
+Scenario: SIP endpoint registers with the registrar. First REGISTER is challenged
+with 401 Unauthorized; UA re-submits with HTTP Digest credentials and is accepted.
+Source pattern: RFC 3261 §22 (HTTP Digest authentication), standard registrar behaviour.
+
+==============================================================================
+F1   UA -> Registrar   REGISTER (no credentials)
+==============================================================================
+REGISTER sip:biloxi.example.com SIP/2.0
+Via: SIP/2.0/UDP pc-bob.biloxi.example.com:5060;branch=z9hG4bKreg1
+Max-Forwards: 70
+From: Bob <sip:bob@biloxi.example.com>;tag=reg-tag-001
+To: Bob <sip:bob@biloxi.example.com>
+Call-ID: regs-7ab3e0@pc-bob.biloxi.example.com
+CSeq: 1 REGISTER
+Contact: <sip:bob@192.0.2.201:5060>;expires=3600
+User-Agent: CiscoPhone/12.5.1
+Content-Length: 0
+
+==============================================================================
+F2   Registrar -> UA   401 Unauthorized   (digest challenge)
+==============================================================================
+SIP/2.0 401 Unauthorized
+Via: SIP/2.0/UDP pc-bob.biloxi.example.com:5060;branch=z9hG4bKreg1;received=192.0.2.201
+From: Bob <sip:bob@biloxi.example.com>;tag=reg-tag-001
+To: Bob <sip:bob@biloxi.example.com>;tag=reg-srv-9988
+Call-ID: regs-7ab3e0@pc-bob.biloxi.example.com
+CSeq: 1 REGISTER
+WWW-Authenticate: Digest realm="biloxi.example.com",
+    qop="auth",
+    nonce="84a4cc6f3082121f32b42a2187831a9e",
+    opaque="",
+    stale=FALSE,
+    algorithm=MD5
+Content-Length: 0
+
+==============================================================================
+F3   UA -> Registrar   REGISTER (with credentials)
+==============================================================================
+REGISTER sip:biloxi.example.com SIP/2.0
+Via: SIP/2.0/UDP pc-bob.biloxi.example.com:5060;branch=z9hG4bKreg2
+Max-Forwards: 70
+From: Bob <sip:bob@biloxi.example.com>;tag=reg-tag-001
+To: Bob <sip:bob@biloxi.example.com>
+Call-ID: regs-7ab3e0@pc-bob.biloxi.example.com
+CSeq: 2 REGISTER
+Contact: <sip:bob@192.0.2.201:5060>;expires=3600
+Authorization: Digest username="bob",
+    realm="biloxi.example.com",
+    nonce="84a4cc6f3082121f32b42a2187831a9e",
+    uri="sip:biloxi.example.com",
+    qop=auth,
+    nc=00000001,
+    cnonce="0a4f113b",
+    response="6629fae49393a05397450978507c4ef1",
+    opaque="",
+    algorithm=MD5
+User-Agent: CiscoPhone/12.5.1
+Content-Length: 0
+
+==============================================================================
+F4   Registrar -> UA   200 OK
+==============================================================================
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP pc-bob.biloxi.example.com:5060;branch=z9hG4bKreg2;received=192.0.2.201
+From: Bob <sip:bob@biloxi.example.com>;tag=reg-tag-001
+To: Bob <sip:bob@biloxi.example.com>;tag=reg-srv-a012
+Call-ID: regs-7ab3e0@pc-bob.biloxi.example.com
+CSeq: 2 REGISTER
+Contact: <sip:bob@192.0.2.201:5060>;expires=3600
+Date: Wed, 22 May 2026 09:14:12 GMT
+Content-Length: 0
