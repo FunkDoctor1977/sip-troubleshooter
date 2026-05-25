@@ -28,8 +28,9 @@ A deliberate **prototype** demonstrating an AI use case where deep telecoms doma
 - [x] v0.1 — Streamlit UI with paste-and-analyse flow
 - [x] v0.2 — Drag-and-drop upload for text traces *and* binary pcap captures (decoded with scapy)
 - [ ] v0.3 — Replace rule-based analyzer with live Claude API call for any pasted trace
-- [ ] v0.4 — Failure-pattern playbook grounded in real-world UK carrier behaviour (Gamma, Colt, BT)
-- [ ] v0.5 — Deploy to Streamlit Cloud · embed screenshots in this README
+- [ ] v0.4 — **SIP ladder diagram** — Wireshark-style sequence visualisation of the parsed call flow, rendered via Mermaid sequenceDiagram (colour-coded 1xx / 2xx / 4xx / 5xx, hover for full message)
+- [ ] v0.5 — Failure-pattern playbook grounded in real-world UK carrier behaviour (Gamma, Colt, BT)
+- [ ] v0.6 — Deploy to Streamlit Cloud · embed screenshots in this README
 
 ## Stack
 
