@@ -1,0 +1,17 @@
+# Streamlit config for local development.
+#
+# enableXsrfProtection / enableCORS are both disabled here because Streamlit's
+# default XSRF protection rejects file uploads with HTTP 403 when the app runs
+# in headless mode and the browser accesses it via a host/port that doesn't
+# match what Streamlit expects (a common pattern on Windows + localhost).
+#
+# This is safe for local development. For a public deployment (Streamlit Cloud
+# etc.) put XSRF protection back on and configure trustedHosts instead.
+
+[server]
+enableXsrfProtection = false
+enableCORS = false
+headless = true
+
+[browser]
+gatherUsageStats = false
