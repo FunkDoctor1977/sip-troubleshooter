@@ -25,9 +25,9 @@ A deliberate **prototype** demonstrating an AI use case where deep telecoms doma
 
 ## Roadmap
 
-- [ ] v0.1 — CLI accepting a pasted trace, returning a structured summary
-- [ ] v0.2 — Streamlit UI with paste-and-analyse flow
-- [ ] v0.3 — Library of anonymised reference traces (registration, INVITE failures, codec mismatches)
+- [x] v0.1 — Streamlit UI with paste-and-analyse flow
+- [x] v0.2 — Drag-and-drop upload for text traces *and* binary pcap captures (decoded with scapy)
+- [ ] v0.3 — Replace rule-based analyzer with live Claude API call for any pasted trace
 - [ ] v0.4 — Failure-pattern playbook grounded in real-world UK carrier behaviour (Gamma, Colt, BT)
 - [ ] v0.5 — Deploy to Streamlit Cloud · embed screenshots in this README
 
