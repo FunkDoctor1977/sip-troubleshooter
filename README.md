@@ -32,9 +32,13 @@ A deliberate **prototype** demonstrating an AI use case where deep telecoms doma
 - [ ] v0.5 — Failure-pattern playbook grounded in real-world UK carrier behaviour (Gamma, Colt, BT)
 - [ ] v0.6 — Deploy to Streamlit Cloud · embed screenshots in this README
 
+## Testing
+
+Pre-flight checklist with every scenario covered in [TESTING.md](TESTING.md). Bundled text traces in [`fixtures/text/`](fixtures/text/) and binary pcap captures in [`fixtures/pcap/`](fixtures/pcap/).
+
 ## Stack
 
-Python · Streamlit · Anthropic Claude API
+Python · Streamlit · scapy · Anthropic Claude API (v0.3)
 
 ## Author
 
