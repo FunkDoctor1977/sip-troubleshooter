@@ -13,6 +13,12 @@ Paste in a SIP trace, ladder diagram, or Cisco UC log. The assistant:
 
 Aimed at second/third-line UC engineers and pre-sales consultants who need to triage a SIP fault quickly without trawling through hundreds of lines of trace.
 
+## Screenshot
+
+![SIP Troubleshooter — automatic 488 codec-mismatch diagnosis](docs/sip-1.png)
+
+*A bundled 488 trace loaded and analysed: the tool identifies the SDP / codec negotiation failure, explains the likely root cause, and lists concrete next debug steps with the relevant RFC references.*
+
 ## Why this project
 
 After more than a decade troubleshooting SIP-based unified communications across Cisco, Vodafone, BT, and Telefónica Tech, the diagnostic pattern is repeatable: read the ladder, find where the dialogue breaks, map the response code to a likely cause, propose a check. This prototype encodes that pattern in an LLM-based assistant so the slow, manual triage becomes a 30-second first pass.
@@ -21,7 +27,7 @@ A deliberate **prototype** demonstrating an AI use case where deep telecoms doma
 
 ## Status
 
-🚧 v0.1 in progress · README-first scaffold.
+✅ **Working prototype.** Drag-and-drop a text trace or binary pcap and get an instant diagnosis; bundled sample traces included.
 
 ## Roadmap
 
@@ -30,7 +36,7 @@ A deliberate **prototype** demonstrating an AI use case where deep telecoms doma
 - [ ] v0.3 — Replace rule-based analyzer with live Claude API call for any pasted trace
 - [ ] v0.4 — **SIP ladder diagram** — Wireshark-style sequence visualisation of the parsed call flow, rendered via Mermaid sequenceDiagram (colour-coded 1xx / 2xx / 4xx / 5xx, hover for full message)
 - [ ] v0.5 — Failure-pattern playbook grounded in real-world UK carrier behaviour (Gamma, Colt, BT)
-- [ ] v0.6 — Deploy to Streamlit Cloud · embed screenshots in this README
+- [ ] v0.6 — Deploy to Streamlit Cloud for a zero-install hosted demo
 
 ## Testing
 
